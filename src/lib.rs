@@ -7,6 +7,7 @@ pub struct Contract;
 #[contract]
 pub struct AtomicSwapContract;
 
+
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
@@ -64,5 +65,16 @@ fn move_token(
     token.transfer(&contract_address,from,&(&max_spend_amount - &transfer_amount),);
 }
 
+
+mod admin;
+mod allowance;
+mod balance;
+mod contract;
+mod metadata;
+mod storage_types;
+
 #[cfg(test)]
 mod test;
+mod token_tests;
+
+pub use crate::contract::TokenClient;
