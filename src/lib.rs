@@ -1,6 +1,11 @@
 #! [no_std]
 
-use soroban_sdk::{contract, contractimpl, symbol_short, token, vec, Address, Env, IntoVal, Symbol, Vec};
+use soroban_sdk::{contract, contractimpl, contracttype, symbol_short, token, vec, Address, Env, IntoVal, Symbol, Vec};
+
+#[contracttype]
+pub enum DataKey {
+    Counter(Address),
+}
 
 #[contract]
 pub struct Contract;
@@ -10,10 +15,14 @@ pub struct AtomicSwapContract;
 
 #[contractimpl]
 impl Contract {
-    pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-        vec![&env, symbol_short!("Hello"), to]
+    pub fn hello(env: Env, to: Symbol, user: Address) -> (Vec<Symbol>, u32) {
+        user.require_auth();
+        let key = DataKey::Counter(user.clone());
+        let mut count = env.storage().persistent().get(&key).unwrap_or_default();
+        count += 1;
+        env.storage().persistent().set(&key, &count);
+        (vec![&env, symbol_short!("Hello"), to], count)
     }
-
 }
 #[contractimpl]
 impl AtomicSwapContract {

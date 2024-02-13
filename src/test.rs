@@ -20,11 +20,12 @@ fn create_atomic_swap_contract(e: &Env) -> AtomicSwapContractClient {
 #[test]
 fn test_greeting() {
     let env = Env::default();
+    env.mock_all_auths();
     let contract_id = env.register_contract(None, Contract);
     let client = ContractClient::new(&env, &contract_id);
 
-    let words = client.hello(&symbol_short!("Dev"));
-    assert_eq!(words, vec![&env, symbol_short!("Hello"), symbol_short!("Dev")]);
+    let words = client.hello(&symbol_short!("Dev"), &Address::generate(&env));
+    assert_eq!(words, (vec![&env, symbol_short!("Hello"), symbol_short!("Dev")], 1));
 }
 
 #[test]
