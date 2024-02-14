@@ -29,6 +29,16 @@ fn test_greeting() {
 }
 
 #[test]
+#[should_panic]
+fn test_greeting2() {
+    let env = Env::default();
+    let contract_id = env.register_contract(None, Contract);
+    let client = ContractClient::new(&env, &contract_id);
+
+    let _words = client.hello(&symbol_short!("Dev"), &Address::generate(&env));
+}
+
+#[test]
 fn test_atomic_swap() {
     let env = Env::default();
     env.mock_all_auths();
